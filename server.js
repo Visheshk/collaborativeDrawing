@@ -20,7 +20,7 @@ function newConnection(socket){
 	// console.log(socket);
 
 	if (io.engine.clientsCount > connectionsLimit) {
-    socket.emit('chat message', "reach the limit of connections")
+    socket.emit('chat message', "Reached the limit of connections. Make sure you only have 1 window of the app open.")
     socket.disconnect()
     console.log('Disconnected...')
     return
@@ -38,7 +38,7 @@ function newConnection(socket){
 
 	// emitting chat msgs
 	function chatMessage (msg) {
-		socket.broadcast.emit('chat message', msg);
+		socket.emit('chat message', msg);
 		console.log(msg);
 		console.log(socket.id);
 	}
