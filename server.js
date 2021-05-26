@@ -2,7 +2,7 @@ var express = require('express');
 var connectionsLimit = 2;
 
 var app = express();
-var server = app.listen(3000);
+var server = app.listen(process.env.PORT || 3000);
 var socket = require('socket.io');
 var rough = require('roughjs');
 
