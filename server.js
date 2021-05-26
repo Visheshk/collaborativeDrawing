@@ -38,7 +38,7 @@ function newConnection(socket){
 
 	// emitting chat msgs
 	function chatMessage (msg) {
-		socket.emit('chat message', msg);
+		io.emit('chat message', socket.id + ":  " + msg);
 		console.log(msg);
 		console.log(socket.id);
 	}
