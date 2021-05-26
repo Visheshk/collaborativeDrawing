@@ -1,26 +1,56 @@
 var socket;
-let button;
+let button, greeting, input;
+
+
+function preload() {
+  nunito = loadFont('assets/Nunito-Bold.ttf');
+}
 
 function setup() {
 
-  createCanvas(800,600);
-  background(51);
+  var cnv = createCanvas(800,600);
+  cnv.center();
+  background(170);
 
   socket = io.connect('http://localhost:3000');
   socket.on('mouse', newDrawing);
 
 
-  button = createButton('click me');
-    button.position(19, 19);
-    button.mousePressed(changeBG);
+  textFont(nunito);
 
+  textSize(20);
+  fill(200, 200, 250);
+
+  var messages = document.getElementById('messages');
+  var form = document.getElementById('form');
+  var input = document.getElementById('input');
+
+  // chat form
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (input.value) {
+      socket.emit('chat message', input.value);
+      input.value = '';
+    }
+  });
+
+  // broadcasting chat
+  socket.on('chat message', function(msg) {
+    var item = document.createElement('li');
+    item.textContent = msg;
+    messages.appendChild(item);
+    window.scrollTo(0, document.body.scrollHeight);
+  });
 }
 
 function newDrawing(data){
 
-  noStroke();
-  fill(100, 0, 240);
-  ellipse(data.x,data.y, 10, 10);
+  // noStroke();
+  fill(255);
+  stroke(100,0,240);
+  strokeWeight(3);
+  line(data.x, data.y, data.px, data.py);
+
 }
 
 
@@ -29,24 +59,30 @@ function mouseDragged() {
 
   var data = {
     x:mouseX,
-    y:mouseY
+    y:mouseY,
+    px: pmouseX,
+    py: pmouseY
   }
 
   socket.emit('mouse', data);
 
-  noStroke();
+  // noStroke();
   fill(255);
-  ellipse(mouseX,mouseY, 10, 10);  
-
+  stroke(255);
+  strokeWeight(4);
+  line(mouseX, mouseY, pmouseX, pmouseY);
 }
 
-function draw() {
-
-
-  
+function draw() { 
 }
 
-function changeBG() {
-  let val = random(255);
-  background(val);
+
+function result() {
+  // let val = random(255);
+  background(50);
+  fill(250, 100, 100);
 }
+
+
+
+
