@@ -21,10 +21,7 @@ function newDrawing(data){
   noStroke();
   fill(100, 0, 240);
   ellipse(data.x,data.y, 10, 10);
-
-
 }
-
 
 
 function mouseDragged() {

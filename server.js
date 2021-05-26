@@ -1,12 +1,10 @@
 var express = require('express');
+var connectionsLimit = 2;
 
 var app = express();
 var server = app.listen(3000);
 var socket = require('socket.io');
-
-
 var rough = require('roughjs');
-
 
 app.use(express.static('public'));
 
@@ -21,13 +19,28 @@ function newConnection(socket){
 	console.log('new connection : ' + socket.id);
 	// console.log(socket);
 
+	if (io.engine.clientsCount > connectionsLimit) {
+    socket.emit('chat message', "reach the limit of connections")
+    socket.disconnect()
+    console.log('Disconnected...')
+    return
+  }
 
 	socket.on('mouse', mouseMessage);
+	socket.on('chat message', chatMessage);
 
+	// emitting the drawing
 	function mouseMessage (data) {
-
 		socket.broadcast.emit('mouse', data);
 		console.log(data);
+		console.log(socket.id);
+	}
+
+	// emitting chat msgs
+	function chatMessage (msg) {
+		socket.broadcast.emit('chat message', msg);
+		console.log(msg);
+		console.log(socket.id);
 	}
 }
 
