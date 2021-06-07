@@ -9,6 +9,7 @@ var app = express();
 var server = app.listen(process.env.PORT || 3000);
 var socket = require('socket.io');
 var rough = require('roughjs');
+var username = "user";
 
 app.use(express.static('public'));
 
@@ -23,6 +24,9 @@ function newConnection(socket){
 	console.log('new connection : ' + socket.id);
 	// console.log(socket);
 
+	if(io.engine.clientsCount = 1){username = "dino"}
+	if(io.engine.clientsCount = 2){username = "panda"}
+
 	if (io.engine.clientsCount > connectionsLimit) {
     socket.emit('chat message', "Reached the limit of connections. Make sure you only have 1 window of the app open.");
     socket.disconnect();
@@ -32,6 +36,7 @@ function newConnection(socket){
 
 	socket.on('mouse', mouseMessage);
 	socket.on('chat message', chatMessage);
+	socket.on('part selected', partSelect);
 
 	// emitting the drawing
 	function mouseMessage (data) {
@@ -44,12 +49,20 @@ function newConnection(socket){
 
 	// emitting chat msgs
 	function chatMessage (msg) {
-		io.emit('chat message', "Creator " + socket.id.slice(17) + ":  " + msg);
+		// socket.broadcast.emit('chat message', "Partner: " + socket.id.slice(17) + ":  " + msg);
+		// socket.emit('chat message', "You: " + socket.id.slice(17) + ":  " + msg);
+		socket.broadcast.emit('chat message', "Partner:  "  + msg);
+		socket.emit('chat message', "You:  " + msg);
+
 		console.log(msg);
 		console.log(socket.id);
 
 		// currently logging full json when a chat msg is sent
 		console.log(obj);
+	}
+
+	function partSelect(part){
+		socket.broadcast.emit('part selected', part);
 	}
 }
 

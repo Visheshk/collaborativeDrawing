@@ -25,7 +25,6 @@ function setup() {
   
 	socket.on('mouse', newDrawing);
 
-
   textFont(nunito);
 
   textSize(20);
@@ -35,6 +34,7 @@ function setup() {
   var form = document.getElementById('form');
   var input = document.getElementById('input');
   var drpbutton = document.getElementById('dropup-content');
+  var parts = document.getElementById('parts');
 
   // chat form
   form.addEventListener('submit', function(e) {
@@ -52,6 +52,8 @@ function setup() {
     messages.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
   });
+
+
 }
 
 function newDrawing(data){

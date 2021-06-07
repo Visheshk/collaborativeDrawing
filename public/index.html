@@ -12,7 +12,6 @@
     <script language="javascript" type="text/javascript" src="drawingSockets.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 
-
     <script language = "javascript">
         function reply_position(clicked_text)
         {
@@ -30,6 +29,13 @@
               var el = document.getElementById('dropup-content');
               document.getElementById('input').value = clicked_text;
         } 
+
+        function switch_turn(){
+          // document.getElementById('instruction').innerHTML = "Your partner is drawing";
+          // document.getElementById('parts').disabled = true;
+          // document.getElementById('switch').disabled = true;
+        }
+
     </script>
 
     <title>Collaborative drawing and chat</title>
@@ -201,13 +207,19 @@
     <p> Collaboratively draw a sketch of a creative creature with your partner by taking  turns to draw parts. </p>
 
     <p>
-    <label for="parts">Choose a part to draw:</label>
-    <select id="parts" name="parts">
-      <option value="volvo">Eye</option>
-      <option value="saab">Tail</option>
-      <option value="fiat">Body</option>
-      <option value="audi">Beak</option>
+    <label for="parts" id = "instruction"> It is your turn to draw. Choose a part to draw:</label>
+    <select id="parts" name="parts" enabled>
+      <option value="eye">Eye</option>
+      <option value="beak">Beak</option>
+      <option value="body">Body</option>
+      <option value="head">Head</option>
+      <option value="legs">Leg(s)</option>
+      <option value="mouth">Mouth</option>
+      <option value="tail">Tail</option>
+      <option value="wings">Wing(s)</option>
     </select><br><br>
+
+    <button id ="switch" onclick="switch_turn()">Switch turn to partner</button>
 
     </div>
 
