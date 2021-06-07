@@ -1,19 +1,27 @@
 var socket;
 let button, greeting, input;
 
+var obj = {
+   table: []
+  };
+
+
+var cnv;
 
 function preload() {
   nunito = loadFont('assets/Nunito-Bold.ttf');
+  // drawingData = loadJSON("drawingData.json");
 }
 
 function setup() {
 
-	var cnv = createCanvas(800,600);
-	cnv.center();
-	background(170);
+	cnv = createCanvas(600,600);
+	cnv.position((windowWidth*2/3)-300, windowHeight/2-300);
+  // cnv.center('vertical');
+  background(170);
 
-	// socket = io.connect('http://localhost:3000');
-  socket = io.connect('https://afternoon-mountain-70127.herokuapp.com/');
+	socket = io.connect('http://localhost:3000');
+  // socket = io.connect('https://afternoon-mountain-70127.herokuapp.com/');
   
 	socket.on('mouse', newDrawing);
 
@@ -26,6 +34,7 @@ function setup() {
   var messages = document.getElementById('messages');
   var form = document.getElementById('form');
   var input = document.getElementById('input');
+  var drpbutton = document.getElementById('dropup-content');
 
   // chat form
   form.addEventListener('submit', function(e) {
@@ -50,14 +59,14 @@ function newDrawing(data){
 	// noStroke();
 	fill(255);
 	stroke(100,0,240);
-	strokeWeight(3);
+	strokeWeight(6);
   line(data.x, data.y, data.px, data.py);
 
 }
 
 
 function mouseDragged() {
-	console.log(mouseX + ',' + mouseY);
+	// console.log(mouseX + ',' + mouseY);
 
 	var data = {
 		x:mouseX,
@@ -71,13 +80,17 @@ function mouseDragged() {
 	// noStroke();
 	fill(255);
 	stroke(255);
-	strokeWeight(4);
+	strokeWeight(6);
   line(mouseX, mouseY, pmouseX, pmouseY);
+
+  // json file write
+  obj.table.push(data);
+  var dataString = JSON.stringify(obj);
+
 }
 
 function draw() {	
 }
-
 
 function result() {
   // let val = random(255);
@@ -86,5 +99,8 @@ function result() {
 }
 
 
-
+// function windowResized() {
+//   resizeCanvas(500,500,windowWidth/2 +100, windowHeight/2-300);
+//   cnv.position(windowWidth/2 +100, windowHeight/2-300);
+// }
 

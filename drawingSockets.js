@@ -12,8 +12,8 @@ function setup() {
   cnv.center();
   background(170);
 
-  // socket = io.connect('http://localhost:3000');
-  socket = io.connect('https://afternoon-mountain-70127.herokuapp.com/');
+  socket = io.connect('http://localhost:3000');
+  // socket = io.connect('https://afternoon-mountain-70127.herokuapp.com/');
   
   socket.on('mouse', newDrawing);
 
