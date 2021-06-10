@@ -65,14 +65,10 @@ function newConnection(socket){
 	// 	// console.log(players.indexOf(socket.id));
 	// })
 
-	// emit turn is player to the other person
-	socket.on('play turn', (son) => {
-        // socket.broadcast.emit('turnPlayed', {
 
-        // });
-        socket.emit('play turn', currentturn);
-        socket.broadcast.emit('play turn', !currentturn);
-        console.log(currentturn);
+	socket.on('done round', (pno) => {
+    	console.log("turn finished by " + pno);
+    	io.emit('done round', (pno));
     });
 
     socket.on('finish turn', (pno) => {

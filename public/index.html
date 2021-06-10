@@ -32,9 +32,9 @@
     <title>Collaborative drawing and chat</title>
     <style>
       body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, Nunito, BlinkMacSystemFont, "Segoe UI",  sans-serif; height: 100%; background: linear-gradient(90deg, #E0E0E0 30%, #FFF 0);}
-      h2 {text-align: center; padding-left: 5rem; }
-      h3 {text-align: center;}
-      p {text-align: center; padding-left: 5rem; padding-bottom: 0.2rem}
+      h2 {text-align: center; padding-left: 5rem; font-family:  -apple-system, Nunito, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      h3 {text-align: center; font-family:  -apple-system, Nunito, BlinkMacSystemFont, "Segoe UI", sans-serif;}
+      p {text-align: center; padding-left: 5rem; padding-bottom: 0.2rem; font-family:  -apple-system, Nunito, BlinkMacSystemFont, "Segoe UI", sans-serif;}
 
       #form { background: #9ED3F4; padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); width:30%;}
       #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
@@ -48,6 +48,7 @@
       .dropbtn { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
 
       .chatbuttons {padding: 0.25rem; position: fixed; bottom:5rem;  height: 2rem; }
+      #done {position: fixed; bottom:3rem; right: 6rem; height: 2rem; background: #42BA50; border: none; padding: 0 1rem; border-radius: 3px; outline: none;}
       /*.dropbtn > button {padding: 0.25rem; padding: 0 2rem; margin: 0.25rem; border-radius: 3px; height: 2rem; }*/
 
       .row{
@@ -70,6 +71,7 @@
         width: 67%;
         padding: 1%;
         float: right;
+
       }
 
       .clear{
@@ -79,8 +81,9 @@
 
       .dropbtn {
         background-color: #3498DB;
-        padding: 14px;
-        font-size: 16px;
+        font-family:  -apple-system, Nunito, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        padding: 12px;
+        font-size: 14px;
         border: none;
       }
 
@@ -129,7 +132,7 @@
       <div class = "chatbuttons">
 
         <div class="dropup">
-          <button class="dropbtn"><i class="fa fa-lightbulb-o"> Position</i></button>
+          <button class="dropbtn"><i class="fa fa-lightbulb-o"> </i> Position</button>
           <div class="dropup-content">
             <a href="#" class="btn" onclick="reply_position(this.text)">top-left</a>
             <a href="#" class="btn" onclick="reply_position(this.text)">left</a>
@@ -144,7 +147,7 @@
         </div>
 
         <div class="dropup">
-          <button class="dropbtn"><i class="fa fa-lightbulb-o"> Parts</i></button>
+          <button class="dropbtn"><i class="fa fa-lightbulb-o"> </i> Parts</button>
           <div class="dropup-content">
             <a href="#" class="btn" onclick="reply_part(this.text)">eye</a>
             <a href="#" class="btn" onclick="reply_part(this.text)">beak</a>
@@ -158,7 +161,7 @@
         </div>
 
         <div class="dropup">
-          <button class="dropbtn"><i class="fa fa-question-circle"> Questions</i></button>
+          <button class="dropbtn"><i class="fa fa-question-circle"> </i> Questions </button>
           <div class="dropup-content">
             <a href="#" class="btn" onclick="reply_exact(this.text)">What are you trying to draw?</a>
             <a href="#" class="btn" onclick="reply_exact(this.text)">Hey, are you still there?</a>
@@ -169,7 +172,7 @@
 
         <div class="dropup">
 
-          <button class="dropbtn"><i class="fa fa-smile-o"> Feedback</i></button>
+          <button class="dropbtn"><i class="fa fa-smile-o"> </i> Feedback</button>
           <div class="dropup-content" id="dropup-content">
             <a href="#" class="btn" onclick="reply_exact(this.text)">That’s a great idea. </a>
             <a href="#" class="btn" onclick="reply_exact(this.text)">That looks so great. </a>
@@ -210,6 +213,8 @@
     </select><br><br>
 
     <button id ="switchButton">Switch turn to partner</button>
+
+    <button id ="done">I think we are done.</button>
 
     </div>
 

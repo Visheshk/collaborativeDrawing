@@ -3,6 +3,7 @@ let button, greeting, input;
 var turn=0;
 var currentTurn = true;
 var playerNumber = -1;
+var done = [false, false];
 
 var obj = {
    table: []
@@ -35,6 +36,7 @@ function setup() {
   var instruction = document.getElementById('instruction');
   var switchButton = document.getElementById('switchButton');
   var turn = true;
+  var doneButton = document.getElementById('done');
 
   // chat form. form input is put into chat msg
   form.addEventListener('submit', function(e) {
@@ -47,26 +49,42 @@ function setup() {
 
   socket.on('chat message', sendMessage);
 
-
-/////////
-
-  socket.on('player number', function (n) {
-    //store on a local variable what player number you are
-    
+  socket.on('player number', function (n) {    
     playerNumber = n;
     console.log("player number is: " + playerNumber);
   });
 
+  doneButton.addEventListener("click", function(d){
+    done[playerNumber] = true;
+    socket.emit('done round', playerNumber);
+    doneButton.disabled = true;
+  });
+
   switchButton.addEventListener("click", function(e){
-    // socket.emit('play turn', turn);
     e.preventDefault();
     
-    /*
-      socket.emit('playTurn', playerNumber);
-    */
     socket.emit('finish turn', playerNumber);
 
-  })
+  });
+
+  socket.on('done round', (pno) => {
+    console.log(pno + " " + playerNumber);
+    if (playerNumber == pno){
+      console.log("your turn just ended");
+     if (done[1 - playerNumber]){alert("everyone is done");}
+    }
+    else {
+     console.log("it's your turn now!!");
+     if (done[playerNumber]){alert("everyone is done");}
+     else {
+      alert("other person is done");
+      done[(1 - playerNumber)] = true;
+    }
+     // instruction.innerHTML = "&#128339;  " + "It is your partner's turn."  
+    }
+
+
+  });
 
   socket.on('turn set', (pno) => {
     console.log(pno + " " + playerNumber);
@@ -89,8 +107,6 @@ function setup() {
     }
 
   });
-
-/////////
 
   // took input from dropdown and emitted
   parts.addEventListener("change", function() {
@@ -126,6 +142,7 @@ function newDrawing(data){
 function mouseDragged() {
 
 	var data = {
+    pno: playerNumber,
 		x:mouseX,
 		y:mouseY,
 		px: pmouseX,
