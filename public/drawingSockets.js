@@ -12,7 +12,6 @@ var obj = {
 var cnv;
 
 function preload() {
-  nunito = loadFont('assets/Nunito-Bold.ttf');
   // drawingData = loadJSON("drawingData.json");
 }
 
