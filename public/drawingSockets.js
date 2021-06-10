@@ -1,10 +1,12 @@
 var socket;
 let button, greeting, input;
+var turn=0;
+var currentTurn = true;
+var playerNumber = -1;
 
 var obj = {
    table: []
   };
-
 
 var cnv;
 
@@ -14,18 +16,14 @@ function preload() {
 }
 
 function setup() {
-
 	cnv = createCanvas(600,600);
-	cnv.position((windowWidth*2/3)-300, windowHeight/2-300);
-  // cnv.center('vertical');
+	cnv.position((windowWidth*2/3)-300, windowHeight/2-250);
   background(170);
 
-	// socket = io.connect('http://localhost:3000');
-  socket = io.connect('https://afternoon-mountain-70127.herokuapp.com/');
+	socket = io.connect('http://localhost:3000');
+  // socket = io.connect('https://afternoon-mountain-70127.herokuapp.com/');
   
 	socket.on('mouse', newDrawing);
-
-  textFont(nunito);
 
   textSize(20);
   fill(200, 200, 250);
@@ -33,10 +31,12 @@ function setup() {
   var messages = document.getElementById('messages');
   var form = document.getElementById('form');
   var input = document.getElementById('input');
-  var drpbutton = document.getElementById('dropup-content');
   var parts = document.getElementById('parts');
+  var instruction = document.getElementById('instruction');
+  var switchButton = document.getElementById('switchButton');
+  var turn = true;
 
-  // chat form
+  // chat form. form input is put into chat msg
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     if (input.value) {
@@ -45,30 +45,85 @@ function setup() {
     }
   });
 
-  // broadcasting chat
-  socket.on('chat message', function(msg) {
-    var item = document.createElement('li');
-    item.textContent = msg;
-    messages.appendChild(item);
-    window.scrollTo(0, document.body.scrollHeight);
+  socket.on('chat message', sendMessage);
+
+
+/////////
+
+  socket.on('player number', function (n) {
+    //store on a local variable what player number you are
+    
+    playerNumber = n;
+    console.log("player number is: " + playerNumber);
   });
 
+  switchButton.addEventListener("click", function(e){
+    // socket.emit('play turn', turn);
+    e.preventDefault();
+    
+    /*
+      socket.emit('playTurn', playerNumber);
+    */
+    socket.emit('finish turn', playerNumber);
 
+  })
+
+  socket.on('turn set', (pno) => {
+    console.log(pno + " " + playerNumber);
+    if (playerNumber == pno){
+      console.log("your turn just ended");
+      currentTurn = false;
+      parts.disabled = true;
+      switchButton.disabled = true;
+      instruction.innerHTML = "&#128339;  " + "It is your partner's turn."  
+    }
+    else {
+      // parts.enabled = true;
+      // switchButton.enabled = true;
+      console.log("it's your turn now!!");
+      currentTurn = true;
+      parts.disabled = false;
+      switchButton.disabled = false;
+      instruction.innerHTML = "&#9997;  " + "It is your turn now. Pick a part: "  
+      // instruction.innerHTML = "&#128339;  " + "It is your partner's turn."  
+    }
+
+  });
+
+/////////
+
+  // took input from dropdown and emitted
+  parts.addEventListener("change", function() {
+  socket.emit('part selected', parts.value);
+  
+});
+
+  socket.on('part selected', partSelected);
 }
 
-function newDrawing(data){
 
-	// noStroke();
+function partSelected(part){
+  // change the instruction text to part
+  instruction.innerHTML = part;
+}
+
+// creating the list of messages
+function sendMessage(msg){
+  var item = document.createElement('li');
+  item.textContent = msg;
+  messages.appendChild(item);
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+// creating the drawing in the new page
+function newDrawing(data){
 	fill(255);
 	stroke(100,0,240);
 	strokeWeight(6);
   line(data.x, data.y, data.px, data.py);
-
 }
 
-
 function mouseDragged() {
-	// console.log(mouseX + ',' + mouseY);
 
 	var data = {
 		x:mouseX,
@@ -88,7 +143,6 @@ function mouseDragged() {
   // json file write
   obj.table.push(data);
   var dataString = JSON.stringify(obj);
-
 }
 
 function draw() {	
@@ -99,7 +153,6 @@ function result() {
   background(50);
   fill(250, 100, 100);
 }
-
 
 // function windowResized() {
 //   resizeCanvas(500,500,windowWidth/2 +100, windowHeight/2-300);

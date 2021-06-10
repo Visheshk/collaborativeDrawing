@@ -8,7 +8,7 @@ function preload() {
 
 function setup() {
 
-  var cnv = createCanvas(800,600);
+  var cnv = createCanvas(600,600);
   cnv.center();
   background(170);
 
@@ -19,7 +19,6 @@ function setup() {
 
 
   textFont(nunito);
-
   textSize(20);
   fill(200, 200, 250);
 
@@ -46,13 +45,11 @@ function setup() {
 }
 
 function newDrawing(data){
-
   // noStroke();
   fill(255);
   stroke(100,0,240);
   strokeWeight(3);
   line(data.x, data.y, data.px, data.py);
-
 }
 
 

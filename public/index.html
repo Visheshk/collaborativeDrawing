@@ -14,26 +14,17 @@
 
     <script language = "javascript">
         function reply_position(clicked_text)
-        {
-              var el = document.getElementById('dropup-content');
+        { 
               document.getElementById('input').value = "We could place the next part in the " + clicked_text;
         }
 
         function reply_part(clicked_text)
         {
-              var el = document.getElementById('dropup-content');
               document.getElementById('input').value = "I suggest that the next part could be the " + clicked_text;
         }
         function reply_exact(clicked_text)
         {
-              var el = document.getElementById('dropup-content');
               document.getElementById('input').value = clicked_text;
-        } 
-
-        function switch_turn(){
-          // document.getElementById('instruction').innerHTML = "Your partner is drawing";
-          // document.getElementById('parts').disabled = true;
-          // document.getElementById('switch').disabled = true;
         }
 
     </script>
@@ -123,7 +114,6 @@
       .dropup:hover .dropbtn {
         background-color: #2980B9;
       }
-
     </style>
   </head>
   <body>
@@ -219,7 +209,7 @@
       <option value="wings">Wing(s)</option>
     </select><br><br>
 
-    <button id ="switch" onclick="switch_turn()">Switch turn to partner</button>
+    <button id ="switchButton">Switch turn to partner</button>
 
     </div>
 
