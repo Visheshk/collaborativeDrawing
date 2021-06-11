@@ -16,12 +16,21 @@ function preload() {
 }
 
 function setup() {
+  // look for recorded room name and authenticated session id
+  // if not found, redirect to login.html
+  // else do the rest
+  const sessionID = localStorage.getItem("sessionID");
+  if (!sessionID) {
+    // Simulate a mouse click:
+    window.location.href = "/login.html";
+  }
+
 	cnv = createCanvas(600,600);
 	cnv.position((windowWidth*2/3)-300, windowHeight/2-250);
   background(170);
 
-	// socket = io.connect('http://localhost:3000');
-  socket = io.connect('https://afternoon-mountain-70127.herokuapp.com/');
+	socket = io.connect('http://localhost:3000');
+  // socket = io.connect('https://afternoon-mountain-70127.herokuapp.com/');
   
 	socket.on('mouse', newDrawing);
 

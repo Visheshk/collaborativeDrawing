@@ -1,12 +1,15 @@
 var express = require('express');
 var connectionsLimit = 2;
+const crypto = require("crypto");
+// const { InMemorySessionStore } = require("./server/sessionStore");
+// const sessionStore = new InMemorySessionStore();
 
 let players = [];
 let current_turn = 0;
 let timeOut;
 let _turn = 0;
 const MAX_WAITING = 5000;
-
+const randomId = () => crypto.randomBytes(8).toString("hex");
 
 var obj = {
    table: []
@@ -27,8 +30,14 @@ var io = socket(server);
 io.sockets.on('connection', newConnection);
 
 function newConnection(socket){
-	// console.log('new connection : ' + socket.id);
-	// console.log(socket);
+  socket.sessionID = randomId();
+  socket.userID = randomId();
+
+  socket.emit("session", {
+    sessionID: socket.sessionID,
+    userID: socket.userID,
+  });
+
 	players.push(socket.id);
 	console.log(players);
 
@@ -48,6 +57,10 @@ function newConnection(socket){
 	socket.on('mouse', mouseMessage);
 	socket.on('chat message', chatMessage);
 	socket.on('part selected', partSelect);
+
+  socket.on('room in', (roomCode) => {
+    
+  });
 
 	socket.on('disconnect', function(){
 	    console.log('A player disconnected');
