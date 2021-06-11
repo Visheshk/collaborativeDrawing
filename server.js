@@ -96,7 +96,7 @@ function newConnection(socket){
 
 	socket.on('done round', (pno) => {
     	console.log("turn finished by " + pno);
-    	console.log(socket);
+    	// console.log(socket);
     	console.log(socket.auth);
     	io.to(socket.auth.room).emit('done round', (pno));
     });
@@ -106,7 +106,7 @@ function newConnection(socket){
     	// console.log(socket);
     	console.log("turn finished by " + socket.auth.playerNumber);
     	// console.log(socket);
-    	console.log(socket.auth);
+    	// console.log(socket.auth);
     	// var i = 0;
     	// for (var c in io.engine.clients) {
     	// 	io.to(c).emit("player number", i);		
@@ -129,7 +129,7 @@ function newConnection(socket){
 	function mouseMessage (data) {
 		socket.broadcast.to(socket.auth.room).emit('mouse', data);
 		console.log(data);
-		console.log(socket.id);
+		// console.log(socket.id);
 		obj.table.push(data);
   		// var dataString = JSON.stringify(obj);
 	}
@@ -145,7 +145,7 @@ function newConnection(socket){
 		}
 		socket.emit('chat message', "You:  " + msg);
 		console.log(msg);
-		console.log(socket.id);
+		// console.log(socket.id);
 
 		// currently logging full json when a chat msg is sent
 		console.log(obj);
