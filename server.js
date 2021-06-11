@@ -50,6 +50,7 @@ function newConnection(socket){
   	console.log(roomCode);
   	let rcCheck = false;
   	rcs = String(roomCode);
+  	console.log(roomPlayers);
   	if (roomCodes.indexOf(rcs) > -1 ) {
   		if (roomPlayers[rcs].length < 2){
   			rcCheck = true;
@@ -73,8 +74,14 @@ function newConnection(socket){
   });
 
   socket.on("attach info", (sessObj) => {
-  	socket.join(sessObj.room);
-  	socket.auth = sessObj;
+  	try{
+	  	socket.join(sessObj.room);
+	  	socket.auth = sessObj;
+	  }
+	  catch(err) {
+	  	console.log(err);
+	  	socket.emit("connect fail");
+	  }
   })
 
 	socket.on('disconnect', function(){

@@ -70,6 +70,11 @@ function setup() {
 
   socket.on('chat message', sendMessage);
 
+  socket.on('connect fail', () => {
+    localStorage.removeItem("sessionID");
+    window.href.location="/";
+  })
+
   socket.on('player number', function (n) {    
     playerNumber = n;
     console.log("player number is: " + playerNumber);
