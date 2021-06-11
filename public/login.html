@@ -45,25 +45,41 @@
   <script language = "javascript">
 
     //
-    const sessionID = JSON.parse(localStorage.getItem("sessionID"));
-    if (sessionID) {
-      if ("room" in sessionID && "userId" in sessionID) {
+    sessionID = localStorage.getItem("sessionID");
+    
+    try {
+      sessionID = JSON.parse(sessionID);
+      console.log(sessionID);
+      if ("sessionID" in sessionID && "room" in sessionID && "playerNumber" in sessionID) {
         //move to homepage, sign in 
+        window.location.href="/";
+      }
+      else {
+        localStorage.removeItem('sessionID');
       }
     }
-    else {
+    catch (err) {localStorage.removeItem('sessionID');}
+    // if (sessionID == null) {
 
-      function logSubmit(event) {
-        // log.textContent = `Form Submitted! Time stamp: ${event.timeStamp}`;
-        console.log(event.target);
-        event.preventDefault();
-        socket.emit("room in", event.target.room.value);
-      }
-
-      const form = document.getElementById('form');
-      form.addEventListener('submit', logSubmit);
-      socket = io.connect('http://localhost:3000');
+    function logSubmit(event) {
+      // log.textContent = `Form Submitted! Time stamp: ${event.timeStamp}`;
+      event.preventDefault();
+      console.log(event.target);
+      socket.emit("room in", event.target.room.value);
     }
+
+    const form = document.getElementById('form');
+    form.addEventListener('submit', logSubmit);
+    socket = io.connect('http://localhost:3000');
+    socket.on('login session', async (token) => {
+      // console.log(token);
+      await localStorage.setItem('sessionID', JSON.stringify(token));
+      window.location.href = "/";
+    });
+    socket.on('login fail', async () => {
+      alert("invalid room code");
+    });
+    // }
 
   </script>
 

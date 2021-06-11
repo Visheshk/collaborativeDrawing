@@ -10,7 +10,12 @@ let timeOut;
 let _turn = 0;
 const MAX_WAITING = 5000;
 const randomId = () => crypto.randomBytes(8).toString("hex");
+const roomCodes = ["234", "543", "342", "152", "342"];
 
+let roomPlayers = {};
+for (rc in roomCodes) {
+	roomPlayers[roomCodes[rc]] = [];
+}
 var obj = {
    table: []
   };
@@ -30,17 +35,11 @@ var io = socket(server);
 io.sockets.on('connection', newConnection);
 
 function newConnection(socket){
-  socket.sessionID = randomId();
-  socket.userID = randomId();
-
-  socket.emit("session", {
-    sessionID: socket.sessionID,
-    userID: socket.userID,
-  });
-
+ 	// console.log("userDeet" in socket);
 	players.push(socket.id);
-	console.log(players);
+	// console.log(players);
 
+	// if (io.engine.clientsCount > connectionsLimit) {
 	if (io.engine.clientsCount > connectionsLimit) {
 		socket.emit('chat message', "Reached the limit of connections. Make sure you only have 1 window of the app open.");
 		socket.disconnect();
@@ -48,7 +47,8 @@ function newConnection(socket){
 	    return
 	}
 	else {
-		setPlayerNumbers(players);
+
+		// setPlayerNumbers(players);
 		// socket.emit('player number', players.indexOf(socket.id));
 		// socket.broadcast.emit('playerInfo')
 	}
@@ -59,8 +59,35 @@ function newConnection(socket){
 	socket.on('part selected', partSelect);
 
   socket.on('room in', (roomCode) => {
-    
+  	//check roomCode is in list of rooms
+  	console.log(roomCode);
+  	let rcCheck = false;
+  	rcs = String(roomCode);
+  	if (roomCodes.indexOf(rcs) > -1 ) {
+  		if (roomPlayers[rcs].length < 2){
+  			rcCheck = true;
+  			let sessObj = {
+  				sessionID: randomId(),
+  				userID: randomId(),
+  				room: roomCode,
+  				playerNumber: roomPlayers[rcs].length
+  			};
+  			roomPlayers[rcs].push(sessObj);
+  			socket.userDeet = sessObj;
+  			socket.join(rcs);
+
+			  socket.emit("login session", sessObj);
+  		}
+		}
+		if (rcCheck == false) {
+			console.log("invalid rc");
+			socket.emit("login fail");
+		}
   });
+
+  socket.on("attach info", (sessObj) => {
+  	socket.auth = sessObj;
+  })
 
 	socket.on('disconnect', function(){
 	    console.log('A player disconnected');
@@ -81,11 +108,17 @@ function newConnection(socket){
 
 	socket.on('done round', (pno) => {
     	console.log("turn finished by " + pno);
+    	console.log(socket);
+    	console.log(socket.auth);
     	io.emit('done round', (pno));
     });
 
     socket.on('finish turn', (pno) => {
+    	// console.log("room" in socket);
+    	// console.log(socket);
     	console.log("turn finished by " + pno);
+    	// console.log(socket);
+    	console.log(socket.auth);
     	// var i = 0;
     	// for (var c in io.engine.clients) {
     	// 	io.to(c).emit("player number", i);		
