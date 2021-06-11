@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script language="javascript" type="text/javascript" src="libraries/p5.js"></script>
+    <script language="javascript" type="text/javascript" src="libraries/p5.dom.js"></script>
+    
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script language = "javascript">
+        function reply_position(clicked_text)
+        { 
+              document.getElementById('input').value = "We could place the next part in the " + clicked_text;
+        }
+
+        function reply_part(clicked_text)
+        {
+              document.getElementById('input').value = "I suggest that the next part could be the " + clicked_text;
+        }
+        function reply_exact(clicked_text)
+        { 
+              document.getElementById('input').value = clicked_text;
+        }
+     </script>
+
+    <title>Collaborative drawing and chat</title>
+
+  </head>
+  <body>
+
+    <form id="form">
+      <label>room: <input name="room" type="number"></label>
+      <br><br>
+      <button type="submit">Login</button>
+    </form>
+    <p id="log"></p>
+
+  </body>
+
+  <script language = "javascript">
+
+    //
+    sessionID = localStorage.getItem("sessionID");
+    
+    try {
+      sessionID = JSON.parse(sessionID);
+      console.log(sessionID);
+      if ("sessionID" in sessionID && "room" in sessionID && "playerNumber" in sessionID) {
+        //move to homepage, sign in 
+        window.location.href="/";
+      }
+      else {
+        localStorage.removeItem('sessionID');
+      }
+    }
+    catch (err) {localStorage.removeItem('sessionID');}
+    // if (sessionID == null) {
+
+    function logSubmit(event) {
+      // log.textContent = `Form Submitted! Time stamp: ${event.timeStamp}`;
+      event.preventDefault();
+      console.log(event.target);
+      socket.emit("room in", event.target.room.value);
+    }
+
+    const form = document.getElementById('form');
+    form.addEventListener('submit', logSubmit);
+    socket = io.connect('http://localhost:3000');
+    socket.on('login session', async (token) => {
+      // console.log(token);
+      await localStorage.setItem('sessionID', JSON.stringify(token));
+      window.location.href = "/";
+    });
+    socket.on('login fail', async () => {
+      alert("invalid room code");
+    });
+    // }
+
+  </script>
+
+</html>

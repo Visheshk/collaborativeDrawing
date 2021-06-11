@@ -10,18 +10,40 @@ var obj = {
   };
 
 var cnv;
+const sessionID = JSON.parse(localStorage.getItem("sessionID"));
 
 function preload() {
   // drawingData = loadJSON("drawingData.json");
+  
+  console.log(sessionID);
+  if (!sessionID) {
+    // Simulate a mouse click:
+    window.location.href = "/login.html";
+  }
 }
 
 function setup() {
+  // look for recorded room name and authenticated session id
+  // if not found, redirect to login.html
+  // else do the rest
+  
+  // else {
 	cnv = createCanvas(600,600);
 	cnv.position((windowWidth*2/3)-300, windowHeight/2-250);
   background(170);
 
-	// socket = io.connect('http://localhost:3000');
-  socket = io.connect('https://afternoon-mountain-70127.herokuapp.com/');
+	socket = io.connect('http://localhost:3000');
+  try {
+    // socket.playerID = sessionID.playerID;
+    // socket.room = sessionID.room;
+    // socket.connect();
+    socket.emit("attach info", sessionID);
+  }
+  catch (err) {
+    // console.log(err);
+    window.location.href = "/login.html";
+  }
+  // socket = io.connect('https://afternoon-mountain-70127.herokuapp.com/');
   
 	socket.on('mouse', newDrawing);
 
@@ -63,6 +85,7 @@ function setup() {
     e.preventDefault();
     
     socket.emit('finish turn', playerNumber);
+    // socket.emit('finish turn', {"playerNumber": playerNumber});
 
   });
 
@@ -111,9 +134,10 @@ function setup() {
   parts.addEventListener("change", function() {
   socket.emit('part selected', parts.value);
   
-});
+  });
 
   socket.on('part selected', partSelected);
+  // }
 }
 
 
