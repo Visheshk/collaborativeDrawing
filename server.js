@@ -40,19 +40,6 @@ function newConnection(socket){
 	// console.log(players);
 
 	// if (io.engine.clientsCount > connectionsLimit) {
-	if (io.engine.clientsCount > connectionsLimit) {
-		socket.emit('chat message', "Reached the limit of connections. Make sure you only have 1 window of the app open.");
-		socket.disconnect();
-	    console.log('Disconnected...');
-	    return
-	}
-	else {
-
-		// setPlayerNumbers(players);
-		// socket.emit('player number', players.indexOf(socket.id));
-		// socket.broadcast.emit('playerInfo')
-	}
-
 
 	socket.on('mouse', mouseMessage);
 	socket.on('chat message', chatMessage);
@@ -86,6 +73,7 @@ function newConnection(socket){
   });
 
   socket.on("attach info", (sessObj) => {
+  	socket.join(sessObj.room);
   	socket.auth = sessObj;
   })
 
@@ -110,13 +98,13 @@ function newConnection(socket){
     	console.log("turn finished by " + pno);
     	console.log(socket);
     	console.log(socket.auth);
-    	io.emit('done round', (pno));
+    	io.to(socket.auth.room).emit('done round', (pno));
     });
 
     socket.on('finish turn', (pno) => {
     	// console.log("room" in socket);
     	// console.log(socket);
-    	console.log("turn finished by " + pno);
+    	console.log("turn finished by " + socket.auth.playerNumber);
     	// console.log(socket);
     	console.log(socket.auth);
     	// var i = 0;
@@ -124,7 +112,7 @@ function newConnection(socket){
     	// 	io.to(c).emit("player number", i);		
     	// 	i = i + 1;
     	// }
-    	io.emit('turn set', (pno));
+    	io.to(socket.auth.room).emit('turn set', pno);
     });
 
     function setPlayerNumbers(players) {
@@ -139,7 +127,7 @@ function newConnection(socket){
 
 	// emitting the drawing
 	function mouseMessage (data) {
-		socket.broadcast.emit('mouse', data);
+		socket.broadcast.to(socket.auth.room).emit('mouse', data);
 		console.log(data);
 		console.log(socket.id);
 		obj.table.push(data);
@@ -148,7 +136,13 @@ function newConnection(socket){
 
 	// emitting chat msgs
 	function chatMessage (msg) {
-		socket.broadcast.emit('chat message', "Partner:  "  + msg);
+		// console.log(socket.auth);
+		try{
+			socket.broadcast.to(socket.auth.room).emit('chat message', "Partner:  "  + msg);
+		}
+		catch (err) {
+			console.log("socket didn't have room info??");
+		}
 		socket.emit('chat message', "You:  " + msg);
 		console.log(msg);
 		console.log(socket.id);
@@ -158,7 +152,8 @@ function newConnection(socket){
 	}
 
 	function partSelect(part){
-		socket.broadcast.emit('part selected', "&#128339;  Partner is drawing the: " + part);
+		// console.log(socket.auth);
+		socket.broadcast.to(socket.auth.room).emit('part selected', "&#128339;  Partner is drawing the: " + part);
 		socket.emit('part selected', "&#9997;  It is your turn to draw. You chose the: " );
 	}
 

@@ -132,6 +132,7 @@ function setup() {
 
   // took input from dropdown and emitted
   parts.addEventListener("change", function() {
+  // console.log("part selection");
   socket.emit('part selected', parts.value);
   
   });
